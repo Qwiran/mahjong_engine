@@ -55,11 +55,7 @@ public class SillyBoardRule implements BoardRule {
                 try {
                     path.put(i*j, TileZoneIdentifier.getIdentifierFromNormalizedName("hand"+Wind.values()[i].getName()));
                     Move drawMove=null;
-                    try {
-                        drawMove = new Move(Wind.values()[i], 0, path, new HashMap<>());
-                    } catch (MoveException ex) {
-                        Logger.getLogger(SillyBoardRule.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    drawMove = new Move(Wind.values()[i], 0, path, new HashMap<>());
                     board.applyMove(drawMove);
                 } catch (GameException ex) {
                     Logger.getLogger(SillyBoardRule.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,12 +83,8 @@ public class SillyBoardRule implements BoardRule {
         } catch (GameException ex) {
             Logger.getLogger(SillyBoardRule.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            Move discard = new Move(nextWindToPlay, 0, path,new HashMap<>());
-            moves.get(nextWindToPlay).add(discard);
-        } catch (MoveException ex) {
-            Logger.getLogger(SillyBoardRule.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Move discard = new Move(nextWindToPlay, 0, path,new HashMap<>());
+        moves.get(nextWindToPlay).add(discard);
         return moves;
     }
 

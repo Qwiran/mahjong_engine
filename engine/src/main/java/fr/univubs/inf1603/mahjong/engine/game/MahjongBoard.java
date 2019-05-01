@@ -1,11 +1,15 @@
 package fr.univubs.inf1603.mahjong.engine.game;
 
 import fr.univubs.inf1603.mahjong.Wind;
+import fr.univubs.inf1603.mahjong.engine.rule.AbstractTile;
 import java.beans.PropertyChangeSupport;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import org.apache.log4j.Logger;
+
 
 /**
  * MahjongBoard represents the mahjong board during the game.
@@ -34,6 +38,9 @@ public class MahjongBoard implements Board, Cloneable {
      */
     private HashMap<GameTileInterface,TileZone> tileToZone;
 
+    private static final Logger LOGGER = Logger.getLogger(GameTile.class.getName());
+
+    
     /**
      * This constructor allows initialization of all fields and should only be
      * used by a persistence framework, factories, or other constructors of this
@@ -44,6 +51,7 @@ public class MahjongBoard implements Board, Cloneable {
      * @param zones La liste des zones
      */
     public MahjongBoard(Wind wind, UUID uuid, EnumMap<TileZoneIdentifier, TileZone> zones) {
+        LOGGER.info("MahjongBoard constructor/4 entry");
         this.currentWind = wind;
         this.uuid = uuid;
         this.zones = zones;
@@ -56,6 +64,7 @@ public class MahjongBoard implements Board, Cloneable {
      * @param wind Le vent courrant du board
      */
     public MahjongBoard(Wind wind) {
+        LOGGER.info("MahjongBoard constructor/1 entry");
         this.currentWind = wind;
         this.uuid = UUID.randomUUID();
         this.zones = new EnumMap<>(TileZoneIdentifier.class);
@@ -81,35 +90,44 @@ public class MahjongBoard implements Board, Cloneable {
     }
     
     /**
-     * Retourne la vision du board du point de vue d un joueur
+     * Retourne la vision du board du point de vue d'un joueur
      * @param wind Le cote du joueur
-     * @return Un board du poiunt de vue du joueur
-     * @throws GameException Si le vent courrant est null
+     * @return Un board du point de vue du joueur
+     * @throws GameException
      */
     Board getViewFromWind(Wind wind) throws GameException{
-        MahjongBoard  retBoard = new MahjongBoard(this.getCurrentWind());
-        String nameHand = "Hand"+wind.getName();
-        String meld0 = "Meld"+wind.getName()+"0";
-        String meld1 = "Meld"+wind.getName()+"1";
-        String meld2 = "Meld"+wind.getName()+"2";
-        String meld3 = "Meld"+wind.getName()+"3";
-        String supreme = "Supreme"+wind.getName();
-        String discard = "Discard"+wind.getName();
-        for(Entry<TileZoneIdentifier,TileZone> entry : this.zones.entrySet()){
-            String tziName = entry.getKey().getNormalizedName();
-            retBoard.zones.put(entry.getKey(), entry.getValue());
-            if(!(tziName.equals(nameHand) || tziName.equals(meld0) || tziName.equals(meld1) || tziName.equals(meld2) || 
-                    tziName.equals(meld3)|| tziName.equals(supreme) || tziName.equals(discard))){
-                for(GameTileInterface gti : retBoard.getTileZone(tziName).getTiles()){
-                    GameTile gt;
-                    if (gti instanceof GameTile){
-                        gt = (GameTile) gti;
-                        if(!gt.isPubliclyVisible()) gt.setTile(HiddenTile.HIDDENTILE);
-                    }else{
-                        throw new GameException("A GameTileInterface is not a GameTile");
-                    }
-                }
-            }
+        // If null is passed we just return this board, another option would be to clone this board.
+        if(wind==null){
+            return this;
+        }
+        
+        // We create a new empty board
+        MahjongBoard retBoard = new MahjongBoard(this.getCurrentWind());
+        
+        // This computes what tzi correspond to the requested player's hand
+        TileZoneIdentifier windHand = TileZoneIdentifier.getIdentifierFromNormalizedName("Hand"+wind.getName());
+ 
+        
+        for(Map.Entry<GameTileInterface,TileZone> e : tileToZone.entrySet()){
+            GameTile key = (GameTile)e.getKey();
+            MahjongTileZone value = (MahjongTileZone)e.getValue();
+        
+            //Determines the destination in the new board
+            MahjongTileZone destination = (MahjongTileZone)retBoard.getTileZone(value.getIdentifier());
+
+            boolean publiclyVisible = key.isPubliclyVisible();
+
+            //If the tile is not publicly visible or in the player's hand we hide it 
+            AbstractTile visibleFace =  publiclyVisible ||
+                                        value.getIdentifier()==windHand ?
+                                        key.getTile() : HiddenTile.HIDDENTILE;
+            //Create the copy of the tile to be added into the new board
+            GameTile copy = new GameTile(key.getGameID(),
+                                        visibleFace,
+                                        key.getUUID(),
+                                        publiclyVisible, 
+                                        key.getOrientation());
+            destination.addTile(copy);
         }
         return retBoard;
     }

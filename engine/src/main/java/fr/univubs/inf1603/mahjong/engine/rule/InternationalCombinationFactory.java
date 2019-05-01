@@ -1,6 +1,9 @@
 package fr.univubs.inf1603.mahjong.engine.rule;
 
 import fr.univubs.inf1603.mahjong.engine.game.GameTile;
+import fr.univubs.inf1603.mahjong.engine.game.GameTileInterface;
+
+import java.util.Arrays;
 
 /**
  * 
@@ -8,29 +11,37 @@ import fr.univubs.inf1603.mahjong.engine.game.GameTile;
 public class InternationalCombinationFactory implements AbstractCombinationFactory {
 
     @Override
-    public Combination newCombination(GameTile... tiles) throws RulesException{
-        for (int i = 0; i < tiles.length; i++)
-            for (int j = 0; j < tiles.length; j++)
-                if (i != j && tiles[i].getGameID() == tiles[j].getGameID())
-                    throw new RulesException("Same gameID found on the tiles");
+    public Combination newCombination(GameTileInterface... tiles) throws RulesException{
+        if (Arrays.stream(tiles).anyMatch(gameTileInterface -> !(gameTileInterface instanceof GameTile)))
+            throw new RulesException("GameTileInterfaces not instances of GameTile");
+        else {
+            GameTile[] gameTiles = (GameTile[]) tiles;
+            for (int i = 0; i < gameTiles.length; i++)
+                for (int j = 0; j < tiles.length; j++)
+                    if (i != j && tiles[i].getGameID() == tiles[j].getGameID())
+                        throw new RulesException("Same gameID found on the tiles");
 
-        try{
-            return new Pung(tiles);
-        }catch(RulesException e){
-            //This combination is not a Pung
-        }try{
-            return new Kong(tiles);
-        }catch(RulesException e){
-            //This combination is not a Kong
-        }try{
-            return new Chow(tiles);
-        }catch(RulesException e){
-            //This combination is not a Chow
-        }try{
-            return new Pair(tiles);
-        }catch(RulesException e){
-            //This combination is not a Pair
+            try {
+                return new Pung(gameTiles);
+            } catch (RulesException e) {
+                //This combination is not a Pung
+            }
+            try {
+                return new Kong(gameTiles);
+            } catch (RulesException e) {
+                //This combination is not a Kong
+            }
+            try {
+                return new Chow(gameTiles);
+            } catch (RulesException e) {
+                //This combination is not a Chow
+            }
+            try {
+                return new Pair(gameTiles);
+            } catch (RulesException e) {
+                //This combination is not a Pair
+            }
+            throw new RulesException("This is not a valid combination");
         }
-        throw new RulesException("This is not a valid combination");
     }
 }

@@ -1,6 +1,6 @@
 package fr.univubs.inf1603.mahjong.engine.rule;
 
-import fr.univubs.inf1603.mahjong.engine.game.GameTile;
+import fr.univubs.inf1603.mahjong.engine.game.GameTileInterface;
 
 public interface AbstractCombinationFactory {
 
@@ -9,5 +9,5 @@ public interface AbstractCombinationFactory {
      * @return The correct Combination made with the given tiles
      * @throws fr.univubs.inf1603.mahjong.engine.rule.RulesException the tiles cannot be made into a valid combination
      */
-    Combination newCombination(GameTile... tiles) throws RulesException;
+    Combination newCombination(GameTileInterface... tiles) throws RulesException;
 }

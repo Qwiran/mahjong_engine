@@ -26,11 +26,7 @@ public class MoveTest{
         HashMap publiclyVisible = new HashMap<>();
         publiclyVisible.put(0, true);
         Move instance=null;
-        try {
-            instance = new Move(expResult, 0, path,publiclyVisible);
-        } catch (MoveException ex) {
-            fail("Move threw an exception: "+ex);
-        }
+        instance = new Move(expResult, 0, path,publiclyVisible);
         Wind result = instance.getWind();
         assertEquals(expResult, result);
     }
@@ -47,11 +43,7 @@ public class MoveTest{
         HashMap publiclyVisible = new HashMap<>();
         publiclyVisible.put(0, true);
         Move instance=null;
-        try {
-            instance = new Move(Wind.EAST, expResult, path,publiclyVisible);
-        } catch (MoveException ex) {
-            fail("Move threw an exception: "+ex);
-        }
+        instance = new Move(Wind.EAST, expResult, path,publiclyVisible);
         int result = instance.getPriority();
         assertEquals(expResult, result);
     }
@@ -67,11 +59,7 @@ public class MoveTest{
         HashMap publiclyVisible = new HashMap<>();
         publiclyVisible.put(0, true);
         Move instance=null;
-        try {
-            instance = new Move(Wind.WEST, 0, expResult,publiclyVisible);
-        } catch (MoveException ex) {
-            fail("Move threw an exception: "+ex);
-        }
+        instance = new Move(Wind.WEST, 0, expResult,publiclyVisible);
         HashMap<Integer, TileZoneIdentifier> result = instance.getPath();
         assertEquals(expResult, result);
     }
@@ -87,11 +75,7 @@ public class MoveTest{
         HashMap expResult = new HashMap<>();
         expResult.put(0, true);
         Move instance=null;
-        try {
-            instance = new Move(Wind.WEST, 0, path,expResult);
-        } catch (MoveException ex) {
-            fail("Move threw an exception: "+ex);
-        }
+        instance = new Move(Wind.WEST, 0, path,expResult);
         HashMap<Integer, Boolean> result = instance.getPubliclyVisible();
         assertEquals(expResult, result);
     }
@@ -109,12 +93,8 @@ public class MoveTest{
         publiclyVisible.put(0, true);
         Move instance1=null;
         Move instance2=null;
-        try {
-            instance1 = new Move(Wind.EAST, priority, path,publiclyVisible);
-            instance2 = new Move(Wind.EAST, priority, path,publiclyVisible);
-        } catch (MoveException ex) {
-            fail("Move threw an exception: "+ex);
-        }
+        instance1 = new Move(Wind.EAST, priority, path,publiclyVisible);
+        instance2 = new Move(Wind.EAST, priority, path,publiclyVisible);
         assertTrue(instance1.isEqual(instance2));
     }
     
@@ -133,12 +113,8 @@ public class MoveTest{
         publiclyVisible2.put(0, false);
         Move instance1=null;
         Move instance2=null;
-        try {
-            instance1 = new Move(Wind.EAST, priority, path,publiclyVisible);
-            instance2 = new Move(Wind.EAST, priority, path,publiclyVisible2);
-        } catch (MoveException ex) {
-            fail("Move threw an exception: "+ex);
-        }
+        instance1 = new Move(Wind.EAST, priority, path,publiclyVisible);
+        instance2 = new Move(Wind.EAST, priority, path,publiclyVisible2);
         assertFalse(instance1.isEqual(instance2));
     }
     

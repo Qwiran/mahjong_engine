@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.univubs.inf1603.mahjong</groupId>
     <artifactId>engine</artifactId>
-    <version>0.8</version>
+    <version>0.8.3</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -111,12 +111,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
             <version>4.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>fr.univubs.inf1603.mahjong</groupId>
