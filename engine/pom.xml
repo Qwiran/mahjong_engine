@@ -129,5 +129,11 @@
             <version>1.2.12</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>fr.univubs.inf1603.mahjong</groupId>
+            <artifactId>engine</artifactId>
+            <version>0.7.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>
