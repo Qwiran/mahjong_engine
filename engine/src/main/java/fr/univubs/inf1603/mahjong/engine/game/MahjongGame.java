@@ -61,6 +61,7 @@ public class MahjongGame implements Game {
         this.uuid = uuid;
         this.playerPoints = playerPoints;
         this.playerWind = playerWind;
+        playingTimer = new Timer();
 
     }
 
@@ -97,6 +98,7 @@ public class MahjongGame implements Game {
         this.uuid = uuid;
         this.playerPoints = new int[4];
         this.playerWind = this.rule.getBoardRule().getPlayerOrder();
+        playingTimer = new Timer();
         
     }
 
@@ -295,7 +297,6 @@ public class MahjongGame implements Game {
                 //playingTimer.schedule(this, playingTime.toMillis());
             }
         };
-        playingTimer = new Timer();
         playingTimer.schedule(task, this.playingTime.toMillis(), this.playingTime.toMillis());
 
     }

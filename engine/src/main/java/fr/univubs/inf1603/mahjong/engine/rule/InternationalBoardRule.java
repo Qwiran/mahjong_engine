@@ -130,11 +130,11 @@ public class InternationalBoardRule implements BoardRule {
                 HashMap<Integer, TileZoneIdentifier> path = new HashMap<Integer, TileZoneIdentifier>();
                 for (int j = 0; j < 13; j++) {
                     Integer idGameTile = board.getTileZone(TileZoneIdentifier.Wall).getTiles().get(j).getGameID();
-                    path.put(idGameTile, board.getTileZone("Hand" + wind.getName()).getIdentifier());
+                    path.put(idGameTile, TileZoneIdentifier.getIdentifierFromNormalizedName("Hand"+wind.getName()));
                 }
                 HashMap<Integer, Boolean> visible = new HashMap<Integer, Boolean>();
                 for (Integer inte : path.keySet()) {
-                    visible.put(inte, true);
+                    visible.put(inte, false);
                 }
                 board.applyMove(new Move(wind, 0, path, visible));
             } catch (GameException e) {
@@ -149,7 +149,7 @@ public class InternationalBoardRule implements BoardRule {
             path.put(idGameTile, TileZoneIdentifier.HandEast);
             HashMap<Integer, Boolean> visible = new HashMap<Integer, Boolean>();
             for (Integer inte : path.keySet()) {
-                visible.put(inte, true);
+                visible.put(inte, false);
             }
             board.applyMove(new Move(Wind.EAST, 0, path, visible));
         } catch (GameException ex) {
@@ -173,6 +173,7 @@ public class InternationalBoardRule implements BoardRule {
      */
     public TileZoneIdentifier getMeldAvailable(MahjongBoard board, Wind wind) throws GameException {
         TileZoneIdentifier tzi = null;
+        
         if (board.getTileZone("Meld" + wind.getName() + "0").getTiles().isEmpty()) {
             tzi = board.getTileZone("Meld" + wind.getName() + "0").getIdentifier();
         } else if (board.getTileZone("Meld" + wind.getName() + "1").getTiles().isEmpty()) {
@@ -276,11 +277,11 @@ public class InternationalBoardRule implements BoardRule {
                         if (combi.isPung()) {
 
                             Move pungStealed;
-                            for (GameTileInterface tile : board.getTileZone("Hand" + wind).getTiles()) {
+                            for (GameTileInterface tile : board.getTileZone("Hand" + wind.getName()).getTiles()) {
                                 if (tile != tile1 && tile != tile2 && tile != gameTile) {
                                     pungStealed = newMeldMove(wind, 1, tzi, tile1, tile2, gameTile);
 
-                                    pungStealed.getPath().put(tile.getGameID(), TileZoneIdentifier.valueOf("Discard" + wind));
+                                    pungStealed.getPath().put(tile.getGameID(), TileZoneIdentifier.getIdentifierFromNormalizedName("Discard" + wind.getName()));
                                     pungStealed.getPubliclyVisible().put(tile.getGameID(), true);
 
                                     movesSteal.add(new Move(pungStealed));
@@ -300,7 +301,7 @@ public class InternationalBoardRule implements BoardRule {
                                     int boardSize = board.getTileZone(TileZoneIdentifier.Wall).getTiles().size();
                                     int tileID = board.getTileZone(TileZoneIdentifier.Wall).getTiles().get(boardSize - 1).getGameID();
 
-                                    kongStealed.getPath().put(tileID, TileZoneIdentifier.valueOf("Hand" + wind));
+                                    kongStealed.getPath().put(tileID, TileZoneIdentifier.getIdentifierFromNormalizedName("Hand" + wind.getName()));
                                     kongStealed.getPubliclyVisible().put(tileID, false);
 
                                     movesSteal.add(new Move(kongStealed));
@@ -386,11 +387,11 @@ public class InternationalBoardRule implements BoardRule {
                         /* the player must discard a tile from their hand */
                         Wind discardWind = lastMove.getWind();
                         try {
-                            for (GameTileInterface tile : board.getTileZone("Hand" + discardWind).getTiles()) {
+                            for (GameTileInterface tile : board.getTileZone("Hand" + discardWind.getName()).getTiles()) {
                                 currPath.clear();
                                 currVisibility.clear();
 
-                                currPath.put(tile.getGameID(), TileZoneIdentifier.valueOf("Discard" + discardWind));
+                                currPath.put(tile.getGameID(), TileZoneIdentifier.getIdentifierFromNormalizedName("Discard" + discardWind.getName()));
                                 currVisibility.put(tile.getGameID(), true);
                                 currMoves.add(new Move(discardWind, 0, currPath, currVisibility));
                             }
@@ -414,14 +415,14 @@ public class InternationalBoardRule implements BoardRule {
                         try {
                             Wind chowStealWind = Wind.values()[(lastMove.getWind().ordinal() + 1) % Wind.values().length];
 
-                            currHand.addAll(board.getTileZone("Hand" + chowStealWind).getTiles());
+                            currHand.addAll(board.getTileZone("Hand" + chowStealWind.getName()).getTiles());
                             currMoves.addAll(possibleChowSteal(board, chowStealWind, board.getTile(gameID), currHand));
 
                             int firstWallTileID = board.getTileZone("Wall").getTiles().get(0).getGameID();
                             currPath.clear();
                             currVisibility.clear();
 
-                            currPath.put(firstWallTileID, TileZoneIdentifier.valueOf("Hand" + chowStealWind));
+                            currPath.put(firstWallTileID, TileZoneIdentifier.getIdentifierFromNormalizedName("Hand" + chowStealWind.getName()));
                             currVisibility.put(firstWallTileID, false);
 
                             currMoves.add(new Move(chowStealWind, 3, currPath, currVisibility));
@@ -432,7 +433,7 @@ public class InternationalBoardRule implements BoardRule {
                                     currHand.clear();
                                     currMoves.clear();
 
-                                    currHand.addAll(board.getTileZone("Hand" + pungStealWind).getTiles());
+                                    currHand.addAll(board.getTileZone("Hand" + pungStealWind.getName()).getTiles());
 
                                     currMoves.addAll(possiblePungSteal(board, pungStealWind, board.getTile(gameID), currHand));
                                     windMoves.put(pungStealWind, currMoves);
@@ -456,7 +457,7 @@ public class InternationalBoardRule implements BoardRule {
                             int boardSize = board.getTileZone(TileZoneIdentifier.Wall).getTiles().size();
                             int lastWallTileID = board.getTileZone(TileZoneIdentifier.Wall).getTiles().get(boardSize - 1).getGameID();
 
-                            currPath.put(lastWallTileID, TileZoneIdentifier.valueOf("Hand" + drawWind));
+                            currPath.put(lastWallTileID, TileZoneIdentifier.getIdentifierFromNormalizedName("Hand" + drawWind.getName()));
 
                             currVisibility.put(lastWallTileID, false);
                             currMoves.add(new Move(drawWind, 0, currPath, currVisibility));

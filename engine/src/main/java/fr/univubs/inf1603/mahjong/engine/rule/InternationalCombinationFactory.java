@@ -15,7 +15,7 @@ public class InternationalCombinationFactory implements AbstractCombinationFacto
         if (Arrays.stream(tiles).anyMatch(gameTileInterface -> !(gameTileInterface instanceof GameTile)))
             throw new RulesException("GameTileInterfaces not instances of GameTile");
         else {
-            GameTile[] gameTiles = (GameTile[]) tiles;
+            GameTile[] gameTiles =  Arrays.copyOf(tiles,tiles.length,GameTile[].class);
             for (int i = 0; i < gameTiles.length; i++)
                 for (int j = 0; j < tiles.length; j++)
                     if (i != j && tiles[i].getGameID() == tiles[j].getGameID())
